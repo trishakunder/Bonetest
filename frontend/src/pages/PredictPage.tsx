@@ -4,12 +4,15 @@ import GradCamViewer from "../components/GradCamViewer";
 import ImageUpload from "../components/ImageUpload";
 import ModelSelector from "../components/ModelSelector";
 import PredictionResultCard from "../components/PredictionResult";
+import { getChronologicalAgeError } from "../utils/growthStatus";
 import type { GradCamResult, ModelInfo, ModelType, PredictionResult } from "../types";
 
 export default function PredictPage() {
   const [models, setModels] = useState<ModelInfo[]>([]);
   const [selectedModel, setSelectedModel] = useState<ModelType>("cnn");
   const [gender, setGender] = useState("male");
+  const [chronologicalAge, setChronologicalAge] = useState("");
+  const [ageTouched, setAgeTouched] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -123,6 +126,37 @@ export default function PredictPage() {
             disabled={predictLoading || gradcamLoading}
           />
 
+          <div className="mt-6">
+            <label
+              htmlFor="chronological-age"
+              className="block text-sm font-medium text-slate-700"
+            >
+              Enter Patient&apos;s Real Age
+            </label>
+            <input
+              id="chronological-age"
+              type="number"
+              min="0.1"
+              max="120"
+              step="0.1"
+              value={chronologicalAge}
+              onChange={(event) => setChronologicalAge(event.target.value)}
+              onBlur={() => setAgeTouched(true)}
+              aria-invalid={ageTouched && Boolean(getChronologicalAgeError(chronologicalAge))}
+              aria-describedby="chronological-age-help chronological-age-error"
+              className="mt-2 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm outline-none transition focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+              placeholder="e.g. 10.0"
+            />
+            <p id="chronological-age-help" className="mt-1 text-xs text-slate-500">
+              Enter age in years. Decimals are allowed.
+            </p>
+            {ageTouched && getChronologicalAgeError(chronologicalAge) && (
+              <p id="chronological-age-error" className="mt-1 text-sm text-red-600">
+                {getChronologicalAgeError(chronologicalAge)}
+              </p>
+            )}
+          </div>
+
           <div className="mt-6 flex flex-wrap gap-3">
             <button
               type="button"
@@ -147,6 +181,7 @@ export default function PredictPage() {
       <div className="space-y-6">
         <PredictionResultCard
           result={prediction}
+          chronologicalAge={chronologicalAge}
           loading={predictLoading}
           error={predictError}
         />

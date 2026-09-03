@@ -1,7 +1,9 @@
 import type { PredictionResult } from "../types";
+import { calculateGrowthAssessment } from "../utils/growthStatus";
 
 interface PredictionResultCardProps {
   result: PredictionResult | null;
+  chronologicalAge: string;
   loading?: boolean;
   error?: string | null;
 }
@@ -14,6 +16,7 @@ function yearsMonths(totalMonths: number): string {
 
 export default function PredictionResultCard({
   result,
+  chronologicalAge,
   loading,
   error,
 }: PredictionResultCardProps) {
@@ -45,6 +48,10 @@ export default function PredictionResultCard({
   }
 
   const confidencePct = Math.round(result.confidence * 100);
+  const growthAssessment = calculateGrowthAssessment(
+    chronologicalAge,
+    result.bone_age_months,
+  );
 
   return (
     <div className="card">
@@ -58,6 +65,43 @@ export default function PredictionResultCard({
       <p className="mt-1 text-sm text-slate-600">
         ≈ {yearsMonths(result.bone_age_months)}
       </p>
+
+      <div className="mt-5 border-t border-slate-200 pt-4">
+        <p className="text-xs text-slate-500">
+          Growth status is estimated by comparing the predicted bone age with the patient&apos;s chronological age.
+        </p>
+        {growthAssessment ? (
+          <dl className="mt-3 space-y-2 text-sm">
+            <div className="flex justify-between gap-4">
+              <dt className="text-slate-500">Chronological Age</dt>
+              <dd className="font-medium text-slate-800">
+                {growthAssessment.chronologicalAgeYears.toFixed(1)} years
+              </dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-slate-500">Predicted Bone Age</dt>
+              <dd className="font-medium text-slate-800">
+                {growthAssessment.predictedBoneAgeYears.toFixed(1)} years
+              </dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-slate-500">Bone Age Difference</dt>
+              <dd className="font-medium text-slate-800">
+                {growthAssessment.differenceYears >= 0 ? "+" : ""}
+                {growthAssessment.differenceYears.toFixed(1)} years
+              </dd>
+            </div>
+            <div className="flex justify-between gap-4 border-t border-slate-200 pt-2">
+              <dt className="font-medium text-slate-600">Growth Status</dt>
+              <dd className="font-semibold text-primary-700">{growthAssessment.status}</dd>
+            </div>
+          </dl>
+        ) : (
+          <p className="mt-3 text-sm text-slate-600">
+            Enter a valid chronological age to calculate growth status.
+          </p>
+        )}
+      </div>
 
       <div className="mt-5">
         <div className="mb-1 flex justify-between text-xs">
