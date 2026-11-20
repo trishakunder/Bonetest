@@ -1,0 +1,19 @@
+{
+    "best_model": {
+        "file": "best_regression_multimodal.pth",
+        "epoch": 22,
+        "drive_location": "/content/drive/MyDrive/BoneTest/Regression_Multimodal/checkpoints/best_regression_multimodal.pth"
+    },
+    "latest_model": {
+        "file": "latest_checkpoint.pth",
+        "epoch": 28,
+        "drive_location": "/content/drive/MyDrive/BoneTest/Regression_Multimodal/checkpoints/latest_checkpoint.pth"
+    },
+    "backup_checkpoints": [
+        "best_epoch17.pth",
+        "best_epoch22.pth",
+        "latest_epoch20.pth",
+        "latest_epoch28.pth"
+    ],
+    "note": "Checkpoint weights are preserved in Google Drive. Publish them as GitHub Release assets for distribution."
+}

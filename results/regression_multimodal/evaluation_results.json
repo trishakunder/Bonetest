@@ -1,0 +1,10 @@
+{
+    "model": "Regression Multimodal",
+    "best_validation_mae": 9.217514991760254,
+    "test_mae": 9.435758590698242,
+    "test_rmse": 12.540851215876456,
+    "test_median_absolute_error": 7.5068817138671875,
+    "test_r2_score": 0.9049569964408875,
+    "test_samples": 1259,
+    "completed_training_epoch": 28
+}
